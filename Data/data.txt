@@ -1,0 +1,2 @@
+id,name,locality,'latitude', 'longitude' , 'review', 'rating', 'wifi', 'ac', 'laundry', 'security','price'
+1,	SMP Group of PGs,	Raghuvanahalli,12.882913,	77.54605,good,4.4,1,1,1,1,	4500	
