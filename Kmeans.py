@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import folium
 import matplotlib.pyplot as plt
-import gmplot
+
 
 
 #using geopy to access the latitude and longitude of the given address
@@ -26,30 +26,40 @@ try:
     df.drop(["FACILITY"],axis=1)
 
         #converting series to numpy array
-    locations=df[["LATITUDE","LONGITUDE","RATING"]].to_numpy()
+    locations=df[["LATITUDE","LONGITUDE"]].to_numpy()
 
         #print location latitude longitude
     print(grid.latitude,grid.longitude)
 
         #implementing Kmeans
-    kmeans=KMeans(n_clusters=10,random_state=0).fit(locations)
+    kmeans=KMeans(n_clusters=15,random_state=42).fit(locations)
     
 
-    nearest_location=kmeans.predict([[grid.latitude,grid.longitude,4.0]])
+    nearest_location=kmeans.predict([[grid.latitude,grid.longitude]])
 
     print(df.loc[nearest_location[0]])
 
     
 
     my_map2 = folium.Map(location = [df.loc[nearest_location[0]].LATITUDE,df.loc[nearest_location[0]].LONGITUDE],
-                                         zoom_start = 20)
+                                         zoom_start = 20, control_scale=True)
  
 # CircleMarker with radius
     folium.Marker([df.loc[nearest_location[0]].LATITUDE,df.loc[nearest_location[0]].LONGITUDE],
                popup = df.loc[nearest_location[0]].HOSTEL_NAME).add_to(my_map2)
-    
-    my_map2.save(r"GeoLocationDataAnalysis/map.html")
+    folium.Marker([grid.latitude,grid.longitude],
+               popup = "My Location").add_to(my_map2)    
+    folium.PolyLine(locations=[(grid.latitude,grid.longitude),(df.loc[nearest_location[0]].LATITUDE,df.loc[nearest_location[0]].LONGITUDE)],line_opacity=0.5).add_to(my_map2)
+    my_map2.save("map.html")
+    # map = folium.Map(location=[df.loc[nearest_location[0]].LATITUDE,df.loc[nearest_location[0]].LONGITUDE],
+    #                                      zoom_start = 20, control_scale=True)
+
+    # folium.Marker(location=[df.loc[nearest_location[0]].LATITUDE,df.loc[nearest_location[0]].LONGITUDE], popup = df.loc[nearest_location[0]].HOSTEL_NAME,
+    #           icon=folium.Icon(color='red', icon='pushpin')).add_to(map)
+              
+    # map.save("map.html")
+
 
 except:
-        print("Couldn't find the location \ntry another Location")    
+         print("")    
 
